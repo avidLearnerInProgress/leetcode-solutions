@@ -10,13 +10,6 @@ def substr(mystr, k):
         if len(set(ele)) == k:
             res.add(ele)
     return len(res)
-    
-    #ans = set() # set to eliminate strings having duplicate characters
-    #xt = list(st)
-    #for ele in xt:
-    #    if len(set(ele)) == k:
-    #        ans.add(ele)
-    #return len(ans)
 
 n = int(input())
 for i in range(n):
