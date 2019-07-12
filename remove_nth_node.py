@@ -18,8 +18,3 @@ class Solution:
             fast = fast.next
         slow.next = slow.next.next
         return head
-            
-            
-        
-        
-        
