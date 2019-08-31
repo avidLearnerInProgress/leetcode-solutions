@@ -14,4 +14,4 @@ class Solution:
             return True
         
         sum -= root.val
-        return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)
+        return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)w
