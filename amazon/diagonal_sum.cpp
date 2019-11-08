@@ -1,35 +1,17 @@
-multimap <int,int> m;
-void inorder(Node * root,int hd) {
+void dSumUtil(Node *root, int d, map<int, int> &mp){
     if(!root) return;
-    
-    m.insert({hd, root->data});
-    inorder(root->left, hd+1);
-    inorder(root->right, hd);
-    
+    mp[d] += root->data;
+    dSumUtil(root->left, d + 1, mp);
+    dSumUtil(root->right, d, mp);
 }
-
-void diagonalPrint(Node *root) {
-
-    inorder(root,0);
-    for(auto it=m.begin();it!=m.end();it++)
-        cout<<it->second<<" ";
-    m.clear();
-
-}
-
-/*void diagonalPrint(Node *root)
+void diagonalSum(Node* root)
 {
-   // your code here
-    queue<Node *> q;
-    q.push(root);
-     while(!q.empty()){
-        Node *t=q.front();
-        while(t){
-            cout<<t->data<<" ";
-            if(t->left)
-                q.push(t->left);
-            t=t->right;
-        }
-        q.pop();
-    }
-}*/
+    // Add your code here
+    if(!root) return;
+    map<int, int> mp;
+    dSumUtil(root, 0, mp);
+    
+    for(auto it = mp.begin(); it != mp.end(); it++)
+        cout<<it->second<<" ";
+    cout<<"\n";
+}
