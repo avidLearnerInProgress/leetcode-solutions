@@ -15,7 +15,6 @@ def substrCount(n, s):
     #1. check for aa, aaa, aaaa, aaaaa etc.
     #2. check for symmetry with 1 middle char different aabaa, aba, aaabaaa etc..
 
-
     for i in range(1, n): #since we are doing backward comparison
         if s[i] == s[i-1]: #checks for 1.
             substrCnt += range_subStr[i-1]
@@ -28,15 +27,8 @@ def substrCount(n, s):
 
 if __name__ == '__main__':
     fptr = open(os.environ['OUTPUT_PATH'], 'w')
-
     n = int(input())
-
     s = input()
-
     result = substrCount(n, s)
-
     fptr.write(str(result) + '\n')
-
     fptr.close()
-
-
