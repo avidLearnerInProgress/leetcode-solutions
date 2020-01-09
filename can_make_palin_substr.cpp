@@ -108,7 +108,7 @@ vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries){
             while(start <= end){
                 current_substr += s[start];
                 start++;
-            }//now I have complete substr to perform operation.
+            }//now I have complete substr   to perform operation.
             cout<<"Original substr:- "<<current_substr<<"\n";
             result.push_back(canMakePalinSubStr(current_substr, k));
         }
