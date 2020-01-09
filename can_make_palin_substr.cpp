@@ -1,3 +1,5 @@
+class solution{
+    public:
     vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries) {
         // prefix vector
         vector<vector<int>> vec;
@@ -34,8 +36,7 @@
         }
         return ans;
     }
-
-
+}
 
     /*
     class Solution {
@@ -117,5 +118,5 @@ vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries){
     return result;
     }
 };  
-    */
+*/
     
