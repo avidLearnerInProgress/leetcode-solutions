@@ -2,7 +2,6 @@ class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
         if(strs.size() == 0) return "";
-        int index = 0;
         string lcp = "";
         
         int ind = 0;
