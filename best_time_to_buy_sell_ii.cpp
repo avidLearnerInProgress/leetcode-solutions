@@ -3,19 +3,19 @@ public:
     int maxProfit(vector<int>& prices) {
         
         
-        int maxProfit = 0;
-        int i = 0, N = prices.size() - 1;
-        int buy = 0, sell = 0;
+        int firstSell = 0, secondSell = 0;
+        int firstBuy = INT_MIN, secondBuy = INT_MIN;
         
-        while(i < N){
-        
-            //current_price > next_price
-            while(i < N && prices[i+1] <= prices[i]) i++; //break when current_price !< next_price
-            buy = prices[i];
-            while(i < N && prices[i+1] > prices[i]) i++;
-            sell = prices[i];
-            maxProfit += sell - buy;
+        for(int price : prices){
+            firstBuy = max(firstBuy, -price); //since you buy stock we invest our money.. hence we write -price
+            firstSell = max(firstSell, firstBuy + price); //sell stock..so we get money hence, firstBuy + price
+            //made some day 1 profit...
+            //now for day 2 we start from existing profit .. ie. from firstSell
+            secondBuy = max(secondBuy, firstSell - price); //same logic for second 
+            secondSell = max(secondSell, secondBuy + price);   
         }
-        return maxProfit;
+        return secondSell;
+        
+        
     }
 };
