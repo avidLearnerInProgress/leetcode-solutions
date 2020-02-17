@@ -17,20 +17,24 @@ int main()
     vector<ll> types(N), result;
     ll total = 0;
     
-    for(int i=0; i<N; i++)
+    for(auto i=0; i<N; i++)
         cin>>types[i];
     
     for(auto i=N-1; i>=0; i--){
         if(M >= types[i]){
             total+=types[i];
             M -= types[i];
-            cout<<total<<"\t"<<M<<"\t"<<i<<"\n";
+            //cout<<total<<"\t"<<M<<"\t"<<i<<"\n";
             result.push_back(i);
         }
     }
     sort(result.begin(), result.end());
-    cout<<"Indices -\n";
+    
+    cout<<result.size()<<"\n";
+    
+    //cout<<"Indices -\n";
     for(auto i: result) cout<<i<<" ";
-    cout<<total<<"/"<<W<<"\n";
+    
+    //cout<<total<<"/"<<W<<"\n";
 	return 0;
 }
