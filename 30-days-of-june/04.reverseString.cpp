@@ -9,7 +9,6 @@ public:
             swap(s[i], s[j]);
             i++; j--;
         }
-        
-        for(auto c : s) cout<<c<<"\t";
+        return;
     }
 };
