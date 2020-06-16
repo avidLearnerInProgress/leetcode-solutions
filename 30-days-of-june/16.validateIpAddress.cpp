@@ -55,3 +55,79 @@ public:
     	return ans[2];
     }
 };
+
+
+
+/*
+My attempt - 
+class Solution {
+public:
+   void split(const string& str, vector<string>& container, const char delim) {
+
+        stringstream ss(str);
+        string token;
+        while (getline(ss, token, delim)) {
+            container.push_back(token);
+        }
+    }
+
+    string validIPAddress(string IP) {
+        vector<string> returns = {"IPv4", "IPv6", "Neither"};
+        if(IP.back() == '.' or IP.back() == ':' or IP.front() == '.' or IP.front() == ':') return returns[2];
+        
+        //if(IP.length() == 0) return returns[2];
+        int count = 0;
+
+        //cout<<IP.substr(0,5)<<"\n";
+        auto search = IP.substr(0,5);
+
+        if(search.find(".") != string::npos){ //colon doesnt exist, check for IPv4
+            vector<string> words;
+            split(IP, words, '.');
+            //if(words[words.size() - 1].back() == '.') return returns[2];
+            
+            for(auto word : words){
+                //cout<<word<<"\n--------";
+                count++;
+
+                if(count > 4 or (word.size() > 1 and word.front() == '0') or word.size() == 0 or word.size() > 4) return returns[2];
+
+                for(auto character : word){
+                    if(isdigit(character))continue;
+                    else return returns[2];
+                }
+                int x = 0;
+                stringstream toint(word);
+                toint >> x;
+
+                if(x > 255) return returns[2];
+            }
+            return count == 4 ? returns[0] : returns[2];
+        }
+        else if(search.find(":") != string::npos){
+            vector<string> words = {};
+            split(IP, words, ':');
+            
+           // auto last = words[words.size() - 1].back();
+            //cout<<last<<"\n";
+            
+            //if(words[words.size() - 1].back() == ':') return returns[2];
+            
+            
+            for(auto word : words){
+                //cout<<word<<"\n-------------";
+
+                count++;
+                if(count > 8 or word.size() == 0 or word.size() > 4) return returns[2];
+
+                for(auto character : word){
+                    if((character >= 'a' and character <= 'f') or (character >= '0' and character <= '9') or (character >= 'A' and character <= 'F')) continue;
+                    else return returns[2];
+                }
+            }
+            return count == 8 ? returns[1] : returns[2];
+        }
+        return returns[2];
+    }
+};
+*/
