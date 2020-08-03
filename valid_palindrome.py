@@ -14,3 +14,35 @@ class Solution:
             i += 1
             j -= 1
         return True
+    
+'''
+CPP solution -
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        
+        if(s.length() == 0) return true;
+        
+        int m=s.length()-1;
+        int i=0;
+        
+        while(i<m) {
+            
+            if(isalnum(s[i]) && isalnum(s[m])) {
+                if(tolower(s[i]) != tolower(s[m]))
+                    return false;
+                else{
+                    i++, m--;
+                    continue;
+                }
+            } 
+            else {
+                if(!isalnum(s[i])) i++;
+                if(!isalnum(s[m])) m--;
+            }
+        }
+        return true;   
+    }
+};
+    '''
