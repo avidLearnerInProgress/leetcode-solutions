@@ -13,7 +13,7 @@ public:
             mp[key].second = keys.begin(); //update map
             return mp[key].first;
         }
-        else return -1;
+        return -1;
     }
     
     void put(int key, int value) {
@@ -21,7 +21,7 @@ public:
             //same operations as that of get operation
             keys.erase(mp[key].second);
             keys.push_front(key);
-            mp[key].second = keys.begin();
+            mp[key] = {value, keys.begin()};
         }
         else {
             if(keys.size() == capacity) {
