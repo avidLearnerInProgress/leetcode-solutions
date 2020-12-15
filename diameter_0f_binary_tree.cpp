@@ -4,23 +4,31 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
- int ans;
-    int findDia(TreeNode* root){
-        if(!root)
-            return 0;
-        int lh = findDia(root->left);
-        int rh = findDia(root->right);
-        ans = max(ans,1+lh+rh);
-        return 1+max(lh,rh);
+private:
+    int height(TreeNode* root, int &diameter) {
+        
+        if(!root) return 0;
+        
+        int leftHeight = height(root->left, diameter);
+        int rightHeight = height(root->right, diameter);
+        
+        diameter = max(diameter, leftHeight + rightHeight + 1); //this is the smart trick to avoid computing recursive diameter again here...at any point in the recursion..diameter will be left + right + 1
+        
+        return 1 + max(leftHeight, rightHeight); //standard height recursive call..
     }
+     
+    
 public:
     int diameterOfBinaryTree(TreeNode* root) {
-        ans=0;
-        findDia(root);
-        return ans>0?ans-1:0;
+        int diameter = INT_MIN;
+        
+        height(root, diameter);
+        return diameter == INT_MIN ? 0 : diameter-1;
     }
 };
