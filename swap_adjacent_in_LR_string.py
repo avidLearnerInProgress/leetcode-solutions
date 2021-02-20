@@ -14,5 +14,5 @@ class Solution:
             #start[i] == 'R'
             else:
                 if i > j: return False
-            i, j = i+1, j+1def canTransform(self, start: str, end: str) -> bool:
+            i, j = i+1, j+1
         
