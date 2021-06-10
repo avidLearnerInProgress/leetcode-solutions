@@ -24,21 +24,23 @@ public:
         
         int totalWeights = weights.size(), totalDays = days;
         int res = -1;
-        int low = weights[0], high = accumulate(weights.begin(), weights.end(), 0);
+        int left = weights[totalWeights - 1], right = accumulate(weights.begin(), weights.end(), 0);
         
-        while(low <= high) {
+        while(left < right) {
             
-            int mid = low + (high - low) / 2;
-            
+			//find mid
+            int mid = left + (right - left) / 2;
+						
+            //condition
             if(isPossibleAllocation(mid, weights, totalDays, totalWeights)) {
-                high = mid - 1;
-                res = mid;
+                right = mid;
             }
+						
+			//else
             else {
-                low = mid + 1;
+                left = mid + 1;
             }
         }
-        
-        return res;     
+        return left;          
     }
 };
