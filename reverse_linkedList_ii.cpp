@@ -10,32 +10,59 @@
  */
 class Solution {
 public:
-    ListNode* reverseBetween(ListNode* head, int m, int n) {
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        /*
+                
+                1  ->  2  ->  3  ->  4  ->  5  ->  6
+                      mth     m             n     nth
+                      prev                        next
+            
+                1  ->  2      3  <-  4  <-  5      6
+                      mth     m             n     nth
+                      prev    |             ^     next
+                        |-----|-------------|       ^
+                              |---------------------|  
+                mthprev=>next = n;
+                m=>next = nthnext;
+                
+        */    
         
-        if(!head) return NULL;
-        if(m == n) return head;
+        ListNode *current = head, *prev = head, *next = head, *mth = NULL, *nth = NULL, *mthPrev = NULL, *nthNext = NULL;
         
-        
-        ListNode *dummy = new ListNode(0);
-        dummy->next = head;
-        
-        int pos = 1;
-        ListNode *nodeBeforeStart = dummy;
-        
-        while(pos < m) {
-            nodeBeforeStart = nodeBeforeStart->next;
-            pos++;
+        for(int i = 1; current != NULL; i++) {
+            //based on standard reverse LL
+            
+            //keep track of next node when we reverse
+            next = current->next; //ncn
+                        
+            if(i == left) {
+                mth = current;
+                mthPrev = prev;
+            }
+            
+            //reverse next ptr to point to prev nodes.
+            if(i > left and i <= right) {
+                current->next = prev; //cnp
+            }
+            
+            if(i == right) {
+                nth = current;
+                nthNext = next;
+            }
+            
+            prev = current; //pc
+            current = next; //cn 
+            
         }
         
-        
-        ListNode *workingPtr = nodeBeforeStart->next;
-        while(m < n) {
-            ListNode *extractNode = workingPtr->next;
-            workingPtr->next = extractNode->next;
-            extractNode->next = nodeBeforeStart->next;
-            nodeBeforeStart->next = extractNode;
-            m++;
+        if(left == 1) { //if m is the first node in LL
+            mth->next = nthNext;
+            head = nth;
         }
-        return dummy->next;
+        else {
+            mthPrev->next = nth;
+            mth->next = nthNext;
+        }
+        return head;
     }
 };
