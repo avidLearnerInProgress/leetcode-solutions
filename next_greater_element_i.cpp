@@ -1,7 +1,8 @@
-class Solution {
-public:
-    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+
 // Forward method
+// class Solution {
+// public:
+//     vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
 //         unordered_map<int, int> ump; //to keep track of nge for each element in nums2
 //         //map of current element in stack => its nge
 //         stack<int> st; //to store right part of search
@@ -22,28 +23,35 @@ public:
         
 //         return result;
 
-        //traverse backward
-        if(nums1.size() == 0) return {};
+//Backward method (more readable and intuitive)
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
         
-        int n = nums2.size();
+        int length = nums2.size(), j = 0;
+        stack<int> st; //auxiliary
+        unordered_map<int, int> subsetMap;
         vector<int> result;
         
-        stack<int> st;
-        unordered_map<int, int> ump;
-        
-        for(int i=n-1; i>=0; i--) {
+        for(int i = length - 1; i >= 0; i--) {
+            int element = nums2[i];
             
-            while(!st.empty() and st.top() < nums2[i]) st.pop();
-            if(st.empty()) ump[nums2[i]] = -1;    
-            else ump[nums2[i]] = st.top();
+            // if element = x, the nge for x will be 2x.. so remove all the x, x/2, x/4, ... elements from stack
+            // top of stack represents next greater element seen so far
+            while(!st.empty() and element > st.top()) 
+                st.pop();
+
+            if(st.empty()) subsetMap[element] = -1;
+            else subsetMap[element] = st.top();
             
-            st.push(nums2[i]);
+            st.push(element);            
         }
         
-        int m = nums1.size();
-        for(auto num : nums1)
-            result.push_back(ump[num]);
-        
+        //since nums1 is subset of nums2; it is guaranteed that all elements of nums1 will be present in nums2
+        for(auto element : nums1) {
+            result.push_back(subsetMap[element]);
+        }
         return result;
     }
+};
 };
