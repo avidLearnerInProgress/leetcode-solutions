@@ -1,22 +1,27 @@
 class Solution {
 public:
     vector<int> nextGreaterElements(vector<int>& nums) {
-        
-        int n = nums.size();
-        if(n == 0) return {};
-        
-        vector<int> result(n, -1);
+        int length = nums.size();
         stack<int> st;
+        vector<int> result(length, 0);
         
-        for(int i=2*n-1; i>=0; i--) {
-            int num = nums[i % n];
-            while(!st.empty() && nums[st.top()] <= num) st.pop();
-            if(st.empty()) result[i % n] = -1;
-            else result[i % n] = nums[st.top()];
+        
+        // since, its a circular array, 
+            // we have create another copy of array elements towards its front
+            // this behavior is captured by iterating over 2 * length indices and using (i % n)th index while accessing elements of nums
+        for(int i = length * 2 - 1; i >= 0; i--) {
             
-            st.push(i % n);
+            while(!st.empty() and nums[i % length] >= st.top()) {
+                st.pop();
+            }
+            
+            
+            if(st.empty()) result[i % length] = -1;
+            else result[i % length] = st.top();
+            
+            st.push(nums[i % length]);
         }
-        return result;
         
+        return result;
     }
 };
