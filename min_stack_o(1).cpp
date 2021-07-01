@@ -1,56 +1,62 @@
 class MinStack {
 public:
     /** initialize your data structure here. */
-    stack<long double> s;
-    long min;
     
+    /*
+    We do 2 * x - minEle to maintain a flag for pop operation
+    So in pop operation when we encounter stack top < minEle; it is an indicator that this is the element where the minEle was updated.
+    The flag basically acts as a medium to jump to the previous minElement when we pop the current minElement.
+    
+    
+    (2 * currEle - minEle) ==> push 
+    (2 * minEle - currEle) ==> pop
+    */
+    
+    
+    int minEle = 0;
+    stack<int> s;
     MinStack() {
         
     }
     
-    void push(long double x) {
-        if(s.empty()) { //if stack is empty just push and set it as min
-            s.push(x);
-            min = x;
-        }    
-        else{
-            if(x < min) { //if current value is less than current min, create flag in stack as 2 * x - min which will allow to traverse amongst next min while popping
-                s.push(2 * x - min);
-                min = x;
-            }
-            else
-                s.push(x); //just push current x
+    void push(int val) {
+        if(s.empty()) {
+            s.push(val);
+            minEle = val;
         }
+        
+        if(val < minEle) {
+            s.push(2 * val - minEle);
+            minEle = val;
+        }
+        
+        else s.push(val);
     }
     
     void pop() {
-        if(!s.empty()){ //if stack is non empty
-            if(s.top() < min) { //if current top is less than min, this indicates that the top is flag. Which means that we update the min to next closest min and then pop the current top
-                min = 2 * min - s.top();
-                s.pop();
-            }
-            else { //else just pop
-                s.pop();
-            }
+        int currEle = s.top();
+        if(currEle < minEle) {
+            minEle = 2 * minEle - currEle;
         }
+        s.pop();
     }
     
     int top() {
-        if(s.top() < min) { //if top is less than min 
-            return min;
-        }
+        if(s.empty()) return -1;
+        if(s.top() < minEle) return minEle;
         else return s.top();
     }
     
     int getMin() {
-        return min;
+        if(s.empty()) return -1;
+        return minEle;
     }
 };
 
 /**
  * Your MinStack object will be instantiated and called as such:
  * MinStack* obj = new MinStack();
- * obj->push(x);
+ * obj->push(val);
  * obj->pop();
  * int param_3 = obj->top();
  * int param_4 = obj->getMin();
