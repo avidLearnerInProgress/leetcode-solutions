@@ -1,78 +1,62 @@
 class Solution {
 public:
-    /*
-    int dfs(vector<vector<char>>& matrix, int i, int j){
-        if(i < 0 or j < 0 or i >= matrix.size() or j >= matrix[i].size() or matrix[i][j] == '0')
-            return 0;
-        else{
-            matrix[i][j] = '0';
-            return 1 + dfs(matrix, i-1, j) + dfs(matrix, i+1, j) + dfs(matrix, i, j + 1) + dfs(matrix, i, j - 1);
-        }
-    }*/
-    
-    int largestRectangleArea(vector<int>& heights) {   
+    int largestRectangleArea(vector<int>& heights) {
+            
+        int length = heights.size();
+        int verticalHeight, leftBound, horizontalWidth, currentArea, maxArea = -1, currentIndex;
+        stack<int> indexes;
         
-        /*
-        if(heights.size() == 0) return 0;
         
-        stack<int> st;
-        int max_rect_area = INT_MIN;
-        int index, curr_area, i;
-        
-        for(i=0; i<=heights.size(); i++){
-            int cheight = i == heights.size() ? 0 : heights[i];
-            if(st.empty() || cheight >= heights[st.top()]){
-                st.push(i++);
-            }
-            else{
-                index = st.top();
-                st.pop();
-                */
-                /*
-                height[index] = max_rect_seen_so_far
-                if stack is empty.. 
-                    there is no earlier start that is present
-                    this means... the current rect is the only start and end..
-                    hence, curr_area = height[index] * i;
+        for(int i = 0; i < length; i++) {
+            currentIndex = i;
+            
+            //found a decreasing sequence - calculate maxArea
+            while(!indexes.empty() and heights[currentIndex] <= heights[indexes.top()]) {
                 
-                if stack is not empty..
-                    there is earlier start that is present
-                    this means... the current rect has the end..
-                    hence, curr_area = height[index] * (i  - s.top() - 1)
-                */
-                /*
-                int breadth = st.empty() ? i : i - st.top() - 1;
-                max_rect_area = max(max_rect_area, heights[index] * breadth);
+                verticalHeight = heights[indexes.top()];
+                indexes.pop();
+                
+                if(indexes.empty())
+                    horizontalWidth = currentIndex;
+                else {
+                    leftBound = indexes.top();
+                    horizontalWidth = currentIndex - leftBound - 1;
+                }
+                
+                currentArea = verticalHeight * horizontalWidth;
+                
+                if(currentArea > maxArea)
+                    maxArea = currentArea;
             }
+            
+            //when its strictly monotonically increasing sequence of heights
+            indexes.push(currentIndex);
         }
         
-        /*
-        while(!st.empty()){
-            index = st.top();
-            st.pop();
-            curr_area = heights[index] * (st.empty() ? i : i - st.top() - 1);
-            max_rect_area = max(curr_area, max_rect_area);
-        }*/
-        //return max_rect_area;
-        int ans = 0;
-        int len = heights.size();
-        if(len == 0){
-            return 0;
-        }
-        stack<int> st;
-        for(int i = 0; i <= len;){
-            int h = (i == len ? 0 : heights[i]);
-            if(st.empty() || heights[st.top()] <= h){
-                st.push(i++);
-            }else{
-                int tmp = st.top();
-                st.pop();
-                int l = (st.empty() ? i : i - st.top() - 1);
-                ans = max(ans, l * heights[tmp]);
+        //if the array only has increasing sequence of elements
+        if(!indexes.empty()) currentIndex++; // you need to be out of bounds at this point to get the 
+        while(!indexes.empty()) {
+                
+                verticalHeight = heights[indexes.top()];
+                indexes.pop();
+                
+                if(indexes.empty())
+                    horizontalWidth = currentIndex;
+                else {
+                    leftBound = indexes.top();
+                    horizontalWidth = currentIndex - leftBound - 1;
+                }
+                
+                currentArea = verticalHeight * horizontalWidth;
+                
+                if(currentArea > maxArea)
+                    maxArea = currentArea;
             }
-        }
-        return ans;
+        
+        return maxArea;
+        
     }
+
     
     int maximalRectangle(vector<vector<char>>& matrix) {
         if(matrix.size() == 0) return 0;
