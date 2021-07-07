@@ -29,7 +29,7 @@ class Solution
 	    int dx[8] = {-2, -2,  2,  2,  -1,  1, -1,  1};
 	    int dy[8] = {-1,  1, -1,  1,  -2, -2,  2,  2};
         
-		vector<vector<bool> > visited(N + 1, vector<bool>(N + 1, false));
+	    vector<vector<bool> > visited(N + 1, vector<bool>(N + 1, false));
         
 	    q.push(Node(KnightPos[0], KnightPos[1], 0));
 	    
