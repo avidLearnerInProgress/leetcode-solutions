@@ -12,38 +12,50 @@
 class Solution {
 public:
     
-//     bool helper(TreeNode* root, int &sum) {
+    //recursive TC: O(n) / SC: O(1)    
+    bool hasPathSum(TreeNode* root, int targetSum) {
         
-       
-//     }
-    
-    bool hasPathSum(TreeNode* root, int sum) {
-         //base cases
+        //basecases
         if(!root) return false;
-        if(!root->left && !root->right && root->val == sum) return true;
+        if(!root->left and !root->right and targetSum == root->val) return true;
         
         //hypothesis
-        sum -= root->val;
+        targetSum -= root->val;
         
         //induction
-        return hasPathSum(root->left, sum) or hasPathSum(root->right, sum);
+        return hasPathSum(root->left, targetSum) or hasPathSum(root->right, targetSum);
+    }
+    
+    //iterative TC: O(n) / SC: O(n)    
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if(!root) return false;
+        
+        int sum = 0;
+        queue<TreeNode *> qu;
+        
+        TreeNode *current = root;    
+        qu.push(current);
+        
+        while(!qu.empty()) {
+            
+            current = qu.front();
+            qu.pop();
+            
+            if(!current->left and !current->right) {
+                if(current->val == targetSum)
+                    return true;
+            } 
+            
+            if(current->left) {
+                current->left->val += current->val;
+                qu.push(current->left);
+            }
+            if(current->right) {
+                current->right->val += current->val;
+                qu.push(current->right);
+            }
+            
+        }
+        return false;
     }
 };
-
-# # Definition for a binary tree node.
-# # class TreeNode:
-# #     def __init__(self, x):
-# #         self.val = x
-# #         self.left = None
-# #         self.right = None
-
-# class Solution:
-#     def hasPathSum(self, root: TreeNode, sum: int) -> bool:
-#         #root to leaf path --> inorder + subtract sum
-#         if not root: return False
-            
-#         if not root.left and not root.right and root.val == sum:
-#             return True
-        
-#         sum -= root.val
-#         return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)w
