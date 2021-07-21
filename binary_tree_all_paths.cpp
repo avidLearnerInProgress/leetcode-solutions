@@ -4,39 +4,74 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
-    vector<string> results;
     
-    void recurse_util(TreeNode *root, string process){
+    //recursive
+    
+    void helper(TreeNode *root, string s, vector<string> &result) {
         if(!root) return;
-        
-        if(!root->left && !root->right){ 
-            //leaf node
-            //process the current string
-            process += to_string(root->val);
-            results.push_back(process);
+        if(!root->left and !root->right) {
+            result.push_back(s + to_string(root->val));
             return;
         }
         
-        //non-leaf nodes
-        
-        process += to_string(root->val);
-        process += "->";
-        
-        
-        recurse_util(root->left, process);
-        recurse_util(root->right, process);
+        else {
+            if(root->left)
+                helper(root->left, s + to_string(root->val) + "->", result);
+            
+            if(root->right)
+                helper(root->right, s + to_string(root->val) + "->", result);
+        }
     }
+    
     
     vector<string> binaryTreePaths(TreeNode* root) {
-        if(!root) return vector<string>();
-        string process = "";
-        recurse_util(root, process);   
-        return results;
+        vector<string> result;
+        
+        helper(root, "", result);
+        return result;
     }
     
+    
+    
+    //iterative
+    vector<string> binaryTreePaths(TreeNode* root) {
+        if(!root) return {};
+        
+        queue<TreeNode *> treeQu;
+        queue<string> strQu;
+        TreeNode *current = root;
+        vector<string> result;
+        string currentStr = "";
+        
+        treeQu.push(current);
+        strQu.push(currentStr);
+        
+        while(!treeQu.empty()) {
+            
+            current = treeQu.front(); treeQu.pop();
+            currentStr = strQu.front(); strQu.pop();
+            
+            
+            if(!current->left and !current->right) {
+                result.push_back(currentStr + to_string(current->val));
+            }
+            
+            if(current->left) {
+                treeQu.push(current->left);
+                strQu.push(currentStr + to_string(current->val) + "->");
+            }
+            if(current->right) {
+                treeQu.push(current->right);
+                strQu.push(currentStr + to_string(current->val) + "->");
+            }
+        }
+        return result;
+    }
 };
