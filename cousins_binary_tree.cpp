@@ -4,30 +4,86 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
-    int parent_x = -1, parent_y = -1, depth_x = -1, depth_y = -1, x, y;
-    
-    void findDepthAndCheckParent(TreeNode* root, int depth) {
-        if(root == NULL) return;
-        if(root->left && root->left->val == x || root->right && root->right->val == x) parent_x = root->val;
+    TreeNode *xparent, *yparent;
+    int xdepth, ydepth;
+            
+    void helper(TreeNode *root, TreeNode *parent, int x, int y, int depth) {
         
-        if(root->left && root->left->val == y || root->right && root->right->val == y) parent_y = root->val;
-        if(root->val == x) depth_x = depth;
-        if(root->val == y) depth_y = depth;
+        if(!root) return;
         
-        findDepthAndCheckParent(root->left, depth + 1);
-        findDepthAndCheckParent(root->right, depth + 1);
+        if(root->val == x) {
+            xdepth = depth;
+            xparent = parent;
+            return;
+        }
+        
+        else if(root->val == y) {
+            ydepth = depth;
+            yparent = parent;
+            return;
+        }
+        
+        else {
+            helper(root->left, root, x, y, depth + 1);
+            helper(root->right, root, x, y, depth + 1);
+        }
     }
     
-    bool isCousins(TreeNode* root, int x, int y) {
-        if(root == NULL) return false;
-        this->x = x, this->y = y;
-        findDepthAndCheckParent(root, 0);
-        return (depth_x == depth_y) && (parent_x != parent_y);
-           
+    // recursive
+    bool isCousins(TreeNode *root, int x, int y) {
+       if(!root) return false;
+        helper(root, NULL, x, y, 0);
+        
+        if((xdepth == ydepth) and (xparent != yparent)) return true;
+        else return false;
+    }
+
+    // iterative
+    bool isCousins(TreeNode *root, int x, int y) {
+
+        queue<TreeNode* > qu;
+        bool xFound = false, yFound = false;
+        int xParent = 0, yParent = 0;
+        qu.push(root);
+
+        while(!qu.empty() and !xFound and !yFound) {
+            int n = qu.size();
+            while(n-- > 0) {
+                auto current = qu.front();
+                qu.pop();
+
+                if(current->left) {
+                    qu.push(current->left);
+                    if(current->left->val == x) {
+                        xParent = current->val;
+                        xFound = true;
+                    }  
+                    if(current->left->val == y) {
+                        yParent = current->val;
+                        yFound = true;
+                    }  
+                }
+
+                if(current->right) {
+                    qu.push(current->right);
+                    if(current->right->val == x) {
+                        xParent = current->val;
+                        xFound = true;
+                    }  
+                    if(current->right->val == y) {
+                        yParent = current->val;
+                        yFound = true;
+                    }  
+                } 
+            }
+        }
+        return xFound and yFound and xParent != yParent;
     }
 };
