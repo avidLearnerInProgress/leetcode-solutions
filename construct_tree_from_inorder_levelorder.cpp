@@ -29,7 +29,7 @@ TreeNode* buildTree(int in[], int level[], int n)
     // level order sequence
     unordered_map<int, int> mp;
     for(int i = 0; i < n; i++) {
-        map[level[i]] = i;
+        mp[level[i]] = i;
     }
  
     // construct the tree and return it
