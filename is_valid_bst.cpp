@@ -11,18 +11,66 @@
  */
 class Solution {
 public:
-    //as per my understanding
-    //the minNode and maxNode during traversal must point to the parent of the current node that we are exploring
-    bool isValidBSTHelper(TreeNode *root, TreeNode *min, TreeNode *max) {
+    //using range min and max
+    bool helper(TreeNode *root, long min, long max) {
         if(!root) return true;
         
-        if(min and root->val <= min->val || max and root->val >= max->val) return false;
+        if(root->val <= min or root->val >= max) {
+            return false;
+        }
         
-        return isValidBSTHelper(root->left, min, root) and isValidBSTHelper(root->right, root, max); 
+        return helper(root->left, min, root->val) and helper(root->right, root->val, max);
     }
     
     bool isValidBST(TreeNode* root) {
-       // if(!root) return true;
-        return isValidBSTHelper(root, NULL, NULL);
+        if(!root) return true;
+        return helper(root, LONG_MIN, LONG_MAX);
+        
     }
+    
+    //using prev node recursive
+    TreeNode *prev;
+    bool isValidBST(TreeNode* root) {
+        
+        if(!root) return true;
+        
+        if(!isValidBST(root->left))
+            return false;
+        
+        //the prev node here keeps track of the prev node to the current node.
+        //we are doing inorder traversal (LVR). Always, the last-seen node must be smaller than the current node.
+        if(prev != NULL and prev->val >= root->val)
+            return false;
+        prev = root;
+        
+        if(!isValidBST(root->right))
+            return false;  
+        
+        return true;
+    }
+    
+    //iterative
+    bool isValidBST(TreeNode *root) {
+        
+        TreeNode *current = root, *prev = NULL;
+        stack<TreeNode *> st;
+        
+        while(!st.empty() or current) {
+            
+            if(current) {
+                st.push(current);
+                current = current->left;
+            }
+            else {
+                auto parent = st.top();
+                st.pop();
+                
+                if(prev and parent->val <= prev->val) return false;
+                prev = parent;
+                current = parent->right;
+            }
+        }
+        return true;
+    }
+    
 };
