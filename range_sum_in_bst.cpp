@@ -11,30 +11,62 @@
  */
 class Solution {
 public:
-    
-    
-    int helper(TreeNode *root, int low, int high) {
-        if(!root) return 0;
-        
-        int sum = 0;
-        
-        if(root->val >= low and root->val <= high) {
-            sum += root->val;
-        }
-        if(root->val >= low) { //it means that the high(upperlimit) is less than root->val and the high will lie within the left half of subtree
-            sum += helper(root->left, low, high);
-        }
-        
-        if(root->val <= high) { //it means that the low is higher than root-val and low will lie within the right half of subtree
-            sum += helper(root->right, low, high);
-        }
-        
-        return sum; //propagate sum to the root node
-    }
-    
+    //recursive
     int rangeSumBST(TreeNode* root, int low, int high) {
         
-        if(!root) return 0;
-        return helper(root, low, high);
+        if (!root) return 0;
+        
+        int ans = 0; //ans holds result of current node at hand.
+        if (low <= root->val && root->val <= high) { //current node within the boundaries [low, high]
+            ans += root->val;
+        }
+        
+        //current node is not in boundaries [low, high]
+        //it means the range [low, high] can occupy children of current node, so we recurse
+        
+        //disect the [low <= node.val <= high] condition into two parts...
+        //if current node is not in range and if current node is <= high - recurse for right half
+        if (root->val <= high) {
+            ans += rangeSumBST(root->right, low, high);
+        }
+        
+        //if current node is not in range and if low <= current node - recurse for left half
+        if (low <= root->val) {
+            ans += rangeSumBST(root->left, low, high);
+        }
+        
+        return ans;
+    }
+    
+    //iterative
+    int rangeSumBST(TreeNode* root, int low, int high) {
+        
+        if (!root) return 0;
+        int sum = 0;
+        stack<TreeNode *> st;
+        st.push(root);
+        
+        
+        while(!st.empty()) {
+            TreeNode *current = st.top();
+            st.pop();
+            
+            if(!current) 
+                continue;
+            
+            if(low <= current->val and current->val <= high) {
+                sum += current->val;
+            }
+            
+            if(low <= current->val) {
+                st.push(current->left);
+            }
+            
+            if(current->val <= high) {
+                st.push(current->right);
+            }
+            
+        }
+        return sum;
     }
 };
