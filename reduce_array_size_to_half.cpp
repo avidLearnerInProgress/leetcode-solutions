@@ -33,3 +33,32 @@ public:
         return -1;
     }
 };
+
+//since I dont care about the actual values in array, it doesnt make sense to insert them in PQ.
+class Solution {
+public:
+    int minSetSize(vector<int>& arr) {
+        
+        unordered_map<int, int> count;
+        for(auto ele : arr) {
+            count[ele]++;
+        }
+        
+        priority_queue<int> Q;
+        for(auto &[k,v] : count) {
+            Q.emplace(v);
+        }
+        
+        int acceptable = arr.size() / 2; //k
+        int currSize = 0, setSize = 0;
+        while(!Q.empty()) {
+            int frequency = Q.top();
+            setSize++;
+            currSize += frequency;
+            if(currSize >= acceptable)
+                return setSize;
+            Q.pop();
+        }
+        return -1;
+    }
+};
