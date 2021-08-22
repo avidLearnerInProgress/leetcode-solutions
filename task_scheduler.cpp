@@ -1,65 +1,47 @@
-/*
-class Solution:
-    def leastInterval(self, tasks: List[str], n: int) -> int:
-        td = dict()
-        count_most_frequent = 0
-        for task in tasks:
-            if task not in td:
-                td[task] = 1
-            else:
-                td[task] += 1
-            count_most_frequent = max(count_most_frequent, td[task])
-    
-        result = (count_most_frequent - 1) * (n + 1)
-        
-        for task in td.keys():
-            if count_most_frequent == td[task]:
-                result += 1
-        return max(result, len(tasks))
-*/
-            
-            
 class Solution {
-/*
-Based on solution - https://leetcode.com/problems/task-scheduler/discuss/104493/C%2B%2B-Java-Clean-Code-Priority-Queue
-*/
 public:
+    
+/*
+Idea:
+-> To work on the same task again, CPU has to wait for time n, therefore we can think of as if there is a cycle, of time n+1, regardless whether you schedule some other task in the cycle or not.
+-> To avoid leaving the CPU with limited choice of tasks and having to sit there cooling down frequently at the end, it is critical to keep the diversity of the task pool for as long as possible.
+-> In order to do that, we should try to schedule the CPU to always try round robin between the most popular tasks at any time. 
+*/
+    
     int leastInterval(vector<char>& tasks, int n) {
-        unordered_map<char, int> counts;
-        for (char t : tasks) {
-            counts[t]++;
+        
+        priority_queue<int> maxHeap;
+        unordered_map<int, int> count;
+        for(auto &task : tasks) {
+            count[task]++;
         }
-        priority_queue<int> pq;
-        for (pair<char, int> count : counts) {
-            pq.push(count.second);
+
+        // we only care about the number of units of time, so just use the count in priority_queue and not the actual task
+        for(auto &[k, v] : count) {
+            maxHeap.emplace(v);
         }
-        int alltime = 0;
-        int cycle = n + 1;
-        while (!pq.empty()) {
-            int time = 0;
-            vector<int> tmp;
-            for (int i = 0; i < cycle; i++) {
-                if (!pq.empty()) {
-                    tmp.push_back(pq.top());
-                    pq.pop();
-                    time++;
+        
+        
+        int minTime = 0;
+        while(!maxHeap.empty()) {
+            int coolTime = 0;
+            vector<int> trackTasks;
+            for(int i = 0; i <= n; ++i) {
+                if(!maxHeap.empty()) {
+                    auto top = maxHeap.top();
+                    trackTasks.emplace_back(top - 1);   //track prev taskTimes in a temporary container
+                    maxHeap.pop();
+                    ++coolTime; //logically this extra variable is not needed, but it just keeps the code clean
                 }
             }
-            for (int cnt : tmp) {
-                if (--cnt) {
-                    pq.push(cnt);
+            for(auto &t : trackTasks) { //insert taskTimes back into the maxHeap
+                if(t) {
+                    maxHeap.emplace(t);
                 }
             }
-            alltime += !pq.empty() ? cycle : time;
+            minTime += maxHeap.empty() ? coolTime : n + 1;
         }
-        return alltime;
+        
+        return minTime;
     }
-};                
-                
-                
-                
-            
-        
-        
-        
-        
+};
