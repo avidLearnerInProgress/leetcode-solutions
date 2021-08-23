@@ -10,39 +10,32 @@
  * };
  */
 class BSTIterator {
-private:
     stack<TreeNode*> st;
+    void partialInorder(TreeNode *root) {
+        while(root) {
+            st.push(root);
+            root = root->left;
+        }
+    }
 public:
-    BSTIterator(TreeNode *root) {
-        find_left(root);
-    }
-
-    /** @return whether we have a next smallest number */
-    bool hasNext() {
-        if (st.empty())
-            return false;
-        return true;
-    }
-
-    /** @return the next smallest number */
-    int next() {
-        TreeNode* top = st.top();
-        st.pop();
-        if (top->right != NULL)
-            find_left(top->right);
-            
-        return top->val;
+        
+    /* TC: O(1) | SC: O(h) */
+    BSTIterator(TreeNode* root) {
+        partialInorder(root);
     }
     
-    /** put all the left child() of root */
-    void find_left(TreeNode* root)
-    {
-        TreeNode* p = root;
-        while (p != NULL)
-        {
-            st.push(p);
-            p = p->left;
+    int next() {
+        auto nextSmallest = st.top();
+        st.pop();
+        
+        if(nextSmallest->right) {
+            partialInorder(nextSmallest->right);
         }
+        return nextSmallest->val;
+    }
+    
+    bool hasNext() {
+        return !st.empty();
     }
 };
 
