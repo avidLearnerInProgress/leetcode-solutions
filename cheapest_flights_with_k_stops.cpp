@@ -1,39 +1,72 @@
 class Solution {
 public:
-    int findCheapestPrice(int n, vector<vector<int>>& a, int src, int sink, int k) {
-        //my approach
-        unordered_map<int, vector<pair<int, int> > >hash;
-        queue<vector<int> >q;
-        int result = INT_MAX;
-        int cnt = 0;
-        for (auto item : a) {
-            hash[item[0]].push_back(make_pair(item[1], item[2]));
-            if (item[0] == src) q.push({item[0], item[1], item[2]});
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        
+//         vector<vector<pair<int, int>>> graph(n);
+        
+//         //using minHeap we keep track of the cheapest price from city x to city y with at most k stops
+//         priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>> > minHeap;
+        
+//         //create adjacency list
+//         for(vector<int>& flight : flights) {
+//             int s = flight[0], d = flight[1], dist = flight[2];
+//             graph[s].push_back({d, dist});
+//         }
+        
+//         vector<int> dist(n+1, INT_MAX);
+//         int e = k + 1; //k = hops; edges = number of hops + 1
+//         minHeap.push({0, src, e}); // {distanceSoFar, currentNode, edgesSeenSoFar}
+        
+//         while(!minHeap.empty()) {
+//             auto current = minHeap.top();
+//             minHeap.pop();
+            
+//             int distance = current[0], currentNode = current[1], edges = current[2];
+//             if(edges < 0) {
+//                 continue;
+//             }
+		    
+//             if(dist[currentNode] < edges) {
+//                 continue;
+//             }
+		        
+//             dist[currentNode] = edges;
+//             if(currentNode == dst) { //if we are at the destination node
+//                 return distance;
+//             }
+//             if(edges > 0) { //if not, explore all neighbors of the currentNode in the graph
+//                 for(pair<int, int>& neighbor : graph[currentNode]) {
+//                     minHeap.push({neighbor.second + distance, neighbor.first, edges - 1});
+//                 }
+//             }   
+//         }
+//         return -1;
+        
+        
+        if (flights.empty()) return 0;
+        vector<unordered_map<int, int>> flights_matrix(n);
+        for (int i = 0; i < flights.size(); ++i) {
+            flights_matrix[flights[i][0]][flights[i][1]] = flights[i][2];
         }
-        while (!q.empty()) {
-            if (cnt == k + 1) break;
-            for (int i = q.size(); i > 0; --i) {
-                vector<int> node = q.front(); q.pop();
-                if (node[1] == sink) result = min(result, node[2]);
-                if (node[2] > result) continue;
-                for (int j = 0; j < hash[node[1]].size(); ++j) {
-                    q.push({node[1], hash[node[1]][j].first, node[2] + hash[node[1]][j].second});
+        vector<pair<int, int>> queue;
+        queue.push_back({src, 0});
+        unordered_map<int,int> visited_price;
+        visited_price[src] = 0;
+        int stops = 0;
+        while(queue.size() && stops <= k) {
+            vector<pair<int, int>> new_queue;
+            for (int i = 0; i < queue.size(); ++i) {
+                for (const auto& iter : flights_matrix[queue[i].first]) {
+                    const int stop = iter.first;
+                    const int price = queue[i].second + iter.second;
+                    if (visited_price.count(stop) && visited_price[stop] < price) continue;
+                    visited_price[stop] = price;
+                    new_queue.push_back({stop, price});
                 }
             }
-            ++cnt;
+            swap(queue, new_queue);
+            ++stops;
         }
-        return result == INT_MAX ? -1 : result;
-        
-        //best solution
-        /*vector<int> c(n, 1e8);
-        c[src] = 0;
-        
-        for(int z=0; z<=k; z++){
-            vector<int> C(c);
-            for(auto e: a)
-                C[e[1]] = min(C[e[1]], c[e[0]] + e[2]);
-            c = C;
-        }
-        return c[sink] == 1e8 ? -1 : c[sink];*/
+        return visited_price.count(dst) == 0 ? -1 : visited_price[dst];
     }
 };
